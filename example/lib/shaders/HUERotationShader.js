@@ -56,7 +56,7 @@ THREE.HueRotateShader = {
 
       "vec4 original = texture2D(tDiffuse, vUv);",
       "vec3 hsv = rgb2hsv(original.xyz);",
-      "hsv.x += amount;",
+      "hsv.x += (amount / 2.0);",
       "if (hsv.x > 1.0) {",
       "  hsv.x -= 1.0;",
       "}",
