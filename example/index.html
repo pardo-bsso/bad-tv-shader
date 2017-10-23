@@ -42,6 +42,7 @@
 	<script src='lib/shaders/CopyShader.js'></script>
 	<script src='lib/shaders/FilmShader.js'></script>
 	<script src='lib/shaders/RGBShiftShader.js'></script>
+  <script src='lib/shaders/HUERotationShader.js'></script>
 	<script src='js/BadTVShader.js'></script>
 	<script src='js/StaticShader.js'></script>
 
@@ -129,6 +130,7 @@
 			renderPass = new THREE.RenderPass( scene, camera );
 			badTVPass = new THREE.ShaderPass( THREE.BadTVShader );
 			rgbPass = new THREE.ShaderPass( THREE.RGBShiftShader );
+      huePass = new THREE.ShaderPass( THREE.HueRotateShader );
 			filmPass = new THREE.ShaderPass( THREE.FilmShader );
 			staticPass = new THREE.ShaderPass( THREE.StaticShader );
 			copyPass = new THREE.ShaderPass( THREE.CopyShader );
@@ -165,6 +167,11 @@
 				nIntensity: 0.4
 			};
 
+      hueParams = {
+        show: true,
+        amount: 0.5
+      };
+
 			gui = new dat.GUI();
 			
 			gui.add(badTVParams, 'mute').onChange(onToggleMute);
@@ -196,6 +203,11 @@
 			f3.add(filmParams, 'nIntensity', 0.0, 2.0).step(0.1).onChange(onParamsChange);
 			f3.open();
 
+      var f5 = gui.addFolder('Hue rotation');
+      f5.add(hueParams, 'show').onChange(onToggleShaders);
+      f5.add(hueParams, 'amount', 0.0, 1.0).step(0.1).onChange(onParamsChange);
+      f5.open();
+
 			gui.close();
 
 			onToggleShaders();
@@ -225,6 +237,7 @@
 			filmPass.uniforms[ 'sCount' ].value = filmParams.count;
 			filmPass.uniforms[ 'sIntensity' ].value = filmParams.sIntensity;
 			filmPass.uniforms[ 'nIntensity' ].value = filmParams.nIntensity;
+      huePass.uniforms[ 'amount' ].value = hueParams.amount;
 		}
 
 
@@ -275,6 +288,10 @@
 			if (rgbParams.show){
 				composer.addPass( rgbPass );
 			}
+
+      if (hueParams.show){
+        composer.addPass( huePass );
+      }
 
 			if (staticParams.show){
 				composer.addPass( staticPass );
